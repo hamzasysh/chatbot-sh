@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+    {% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,8 +11,21 @@
             margin: 0;
             padding: 0;
             background-color: #f2f2f2;
+            position: relative; /* Added for positioning the logo */
+        }
+        #container {
+            display: flex;
+            min-height: 100vh; /* Changed to min-height */
+        }
+        #sidebar {
+            width: 200px;
+            background-color: #fff; /* Changed sidebar background color to white */
+            color: #333; /* Changed text color to dark */
+            padding: 20px;
+            box-sizing: border-box;
         }
         #chat-container {
+            flex: 1;
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
@@ -67,16 +81,39 @@
         #send-button:hover {
             background-color: #0056b3;
         }
+        /* Added CSS for the user logo */
+        #user-logo {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%; /* Making the image round */
+            overflow: hidden; /* Hiding overflow if the image exceeds the circle */
+        }
     </style>
 </head>
 <body>
-    <div id="chat-container">
-        <div id="chat-display">
-            <!-- Messages will be displayed here -->
+    <div id="container">
+        <div id="sidebar">
+            <h2>System Heuristics: ChatGPT</h2>
+            <ul>
+                <li>Chat History 1</li>
+                <li>Chat History 2</li>
+                <li>Chat History 3</li>
+            </ul>
         </div>
-        <input type="text" id="message-input" placeholder="Type your message here...">
-        <button id="send-button">Send</button>
+        <div id="chat-container">
+            <div id="chat-display">
+                <!-- Messages will be displayed here -->
+            </div>
+            <input type="text" id="message-input" placeholder="Type your message here...">
+            <button id="send-button">Send</button>
+        </div>
     </div>
+    <!-- Added user logo image -->
+    <label>User</label>
+    <img id="user-logo" src="{% static 'chat/images/logo.jpg' %}" alt="User Logo">
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const messageInput = document.getElementById('message-input');

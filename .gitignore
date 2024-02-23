@@ -15,7 +15,7 @@ __pycache__/
 media/
 
 # Static files
-staticfiles/
+static/
 
 # Compiled Python bytecode
 *.pyc
