@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -74,10 +79,24 @@ WSGI_APPLICATION = 'ChatBotSH.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
+"""DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}"""
+
+DATABASES = {
+    'default': {
+            'ENGINE': 'djongo',
+            'ENFORCE_SCHEMA': False,
+            'CLIENT': {
+                'host': 'mongodb+srv://hamzaashraf:DwlsgnrpBwnz1pN5@cluster0.r0dkzmp.mongodb.net',
+                'username': 'hamzaashraf',
+                'password': 'DwlsgnrpBwnz1pN5',
+                'name': 'chatbot',
+                'authMechanism': 'SCRAM-SHA-1'
+            }
     }
 }
 
@@ -127,3 +146,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_ROOT = BASE_DIR / 'static'
 
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')

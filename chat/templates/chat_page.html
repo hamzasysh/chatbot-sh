@@ -67,7 +67,7 @@
             resize: none;
             overflow-y: auto;
         }
-        #send-button {
+#send-button {
     width: 40px;
     height: 40px;
     padding: 0;
@@ -93,6 +93,13 @@
             align-items: center;
             font-weight: bold;
         }
+        #disclaimer {
+            text-align: center; /* Aligning text inside div */
+            margin: 0 auto; /* Centering div horizontally */
+            width: 50%; /* Set the width of the div */
+            background-color:white; /* Just for visibility */
+            padding: 20px; /* Add some padding for better appearance */
+        }
     </style>
 </head>
 <body>
@@ -102,7 +109,7 @@
     <div id="chat-container">
         <div id="chat-display">
             <div id="help-today">
-                Need help? Try asking "What can you do?".
+                How can I help you today?
             </div>
             <!-- Messages will be displayed here -->
         </div>
@@ -110,7 +117,11 @@
             <input type="text" id="message-input" placeholder="Type your message here...">
             <button id="send-button">&#8593;</button>
         </div>
+        <div id="disclaimer">
+            <p>ChatBot can make mistakes. Consider checking important information.</p>
+        </div>
     </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const messageInput = document.getElementById('message-input');
@@ -141,6 +152,22 @@
                     helpTodayMessage.style.display = 'block';
                 }
             });
+        });
+        window.addEventListener('beforeunload', function(event) {
+        // Send a request to the server to end the session
+        $.ajax({
+                    url:'/chat/end-session/',
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function(response) {
+                        var id = response.id;
+                        console.log(id);
+ 
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error checking progress:', error);
+                    }
+                });
         });
     </script>
 </body>
