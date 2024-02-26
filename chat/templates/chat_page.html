@@ -43,13 +43,15 @@
         }
         .message {
             margin-bottom: 10px;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .user-message {
+            background-color: #7FFFD4; /* Aquamarine */
+            text-align: right;
         }
         .bot-message {
-            background-color: #dff0d8;
-            border-radius: 5px;
-            padding: 5px 10px;
-            margin-right: 50px;
-            text-align: right;
+            background-color: #ADD8E6; /* Light Blue */
         }
         #message-input-container {
             display: flex;
@@ -67,25 +69,25 @@
             resize: none;
             overflow-y: auto;
         }
-#send-button {
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    margin-left: 10px; /* Adjust margin to separate from message input */
-    background-color: black; /* ChatGPT blue color */
-    border: none; /* Remove border */
-    cursor: pointer;
-    transition: background-color 0.3s ease; /* Add transition effect */
-    color: #fff; /* Text color */
-    font-size: 18px; /* Font size */
-    line-height: 40px; /* Center the arrow vertically */
-    font-weight: bold; /* Make the arrow bolder */
-    border-radius: 5px; /* Make the button square */
-}
+        #send-button {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            margin-left: 10px; /* Adjust margin to separate from message input */
+            background-color: black; /* ChatGPT blue color */
+            border: none; /* Remove border */
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Add transition effect */
+            color: #fff; /* Text color */
+            font-size: 18px; /* Font size */
+            line-height: 40px; /* Center the arrow vertically */
+            font-weight: bold; /* Make the arrow bolder */
+            border-radius: 5px; /* Make the button square */
+        }
 
-#send-button:hover {
-    background-color: #0056b3; /* Darker shade of ChatGPT blue on hover */
-}
+        #send-button:hover {
+            background-color: #0056b3; /* Darker shade of ChatGPT blue on hover */
+        }
 
         #help-today {
             display: flex;
@@ -101,6 +103,7 @@
             padding: 20px; /* Add some padding for better appearance */
         }
     </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
     <div id="sidebar">
@@ -128,46 +131,69 @@
             const chatDisplay = document.getElementById('chat-display');
             const helpTodayMessage = document.getElementById('help-today');
 
-            function addMessage(message) {
+            function addMessage(message, sender) {
                 if (message.trim() !== '') {
                     const messageElement = document.createElement('div');
                     messageElement.textContent = message;
                     messageElement.classList.add('message');
-                    messageElement.classList.add('bot-message');
+
+                    // Apply different styles based on the sender
+                    if (sender === 'User') {
+                        messageElement.classList.add('user-message');
+                    } else if (sender === 'Chatbot') {
+                        messageElement.classList.add('bot-message');
+                    }
+
                     chatDisplay.appendChild(messageElement);
                 }
             }
 
             document.getElementById('send-button').addEventListener('click', function() {
                 const message = messageInput.value;
-                addMessage(message);
+                addMessage(message, 'User'); // Add user message with appropriate style
                 helpTodayMessage.style.display = 'none';
                 messageInput.value = '';
+
+                // Send the user message to your Django endpoint
+                $.ajax({
+                    url: '/chat/send-prompt/',
+                    type: 'POST',
+                    data: { prompt: message },
+                    success: function(response) {
+                        // Process the response from your Django endpoint or OpenAI API
+                        addMessage(response.bot_answer, 'Chatbot'); // Add bot response with appropriate style
+                    },
+                    error: function(xhr, errmsg, err) {
+                        // Handle errors
+                        console.error(xhr.status + ": " + xhr.responseText);
+                    }
+                });
             });
 
             messageInput.addEventListener('input', function() {
                 if (messageInput.value.trim() !== '') {
                     helpTodayMessage.style.display = 'none';
-                } else {
-                    helpTodayMessage.style.display = 'block';
-                }
+                } 
+                //else {
+                  //  helpTodayMessage.style.display = 'block';
+               // }
             });
         });
+
         window.addEventListener('beforeunload', function(event) {
-        // Send a request to the server to end the session
-        $.ajax({
-                    url:'/chat/end-session/',
-                    type: 'POST',
-                    dataType: 'json',
-                    success: function(response) {
-                        var id = response.id;
-                        console.log(id);
- 
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error checking progress:', error);
-                    }
-                });
+            // Send a request to the server to end the session
+            $.ajax({
+                url:'/chat/end-session/',
+                type: 'POST',
+                dataType: 'json',
+                success: function(response) {
+                    var id = response.id;
+                    console.log(id);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error checking progress:', error);
+                }
+            });
         });
     </script>
 </body>

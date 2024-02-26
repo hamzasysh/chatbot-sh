@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #007bff; /* Header text color */
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        input[type="file"] {
+            margin-bottom: 20px;
+        }
+        button[type="submit"], .openai-button {
+            margin: 0 auto;
+            padding: 15px 30px; /* Increase padding for bigger button */
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block; /* Make button a block element */
+        }
+        button[type="submit"]:hover, .openai-button:hover {
+            background-color: #0056b3;
+        }
+        .openai-section {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #f2f2f2;
+            border-radius: 8px;
+        }
+        .openai-heading {
+            margin-bottom: 20px;
+            color: #28a745; /* Section heading color */
+        }
+        .openai-input {
+            display: none; /* Hide the text area */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Page</h1>
+        <form id="upload-form" enctype="multipart/form-data">
+            <label for="document">Upload Document:</label>
+            <input type="file" name="document" id="document" onchange="handleFileSelect(event)">
+            <!-- Button onclick event to trigger file upload -->
+            <button type="button" onclick="document.getElementById('document').click();">Upload</button>
+        </form>
+    </div>
+    <div class="container openai-section">
+        <h2 class="openai-heading">Train Model</h2>
+        <!-- Text area removed -->
+        <button class="openai-button">Train</button>
+    </div>
+
+    <script>
+        function handleFileSelect(event) {
+            const fileInput = event.target;
+            const files = fileInput.files;
+
+            if (files.length > 0) {
+                const file = files[0];
+                const url = URL.createObjectURL(file);
+
+                // Create a temporary link element
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = file.name;
+
+                // Add the link to the document body and trigger the click event
+                document.body.appendChild(link);
+                link.click();
+
+                // Clean up after download
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }
+        }
+    </script>
+</body>
+</html>

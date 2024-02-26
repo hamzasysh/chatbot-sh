@@ -18,7 +18,8 @@ from django.contrib import admin
 from django.urls import path,include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    #path('admin/', admin.site.urls),
     path('chat/', include('chat.urls')),  # Include the URL pattern of your app
-
+    path('admin-interface/', include('admin_interface.urls')),  # Include the URL pattern of your app
+    
 ]

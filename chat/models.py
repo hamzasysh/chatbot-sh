@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 class Conversation(models.Model):
-    session_id = models.CharField(max_length=100, unique=True)  # Unique identifier for the conversation session
+    session_id = models.CharField(max_length=100,unique=True)  # Unique identifier for the conversation session
 
     def __str__(self):
         return self.session_id
