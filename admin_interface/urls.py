@@ -3,5 +3,5 @@ from .views import admin_interface
 
 urlpatterns = [
     path('', admin_interface, name='admin_interface'),
-    
+    path('train-model/', admin_interface, name='admin_interface'),
 ]

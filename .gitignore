@@ -32,3 +32,6 @@ local_settings.py
 
 # Ignore database migrations
 */migrations/
+
+#Ignore Training Folder
+training/
