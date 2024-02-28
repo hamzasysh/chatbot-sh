@@ -150,3 +150,5 @@ STATIC_ROOT = BASE_DIR / 'static'
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
 TRAIN_FOLDER=os.getenv('TRAIN_FOLDER')
+
+SYSTEM_ROLE=os.getenv('SYSTEM_ROLE')
