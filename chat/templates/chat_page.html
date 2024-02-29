@@ -94,6 +94,7 @@
             justify-content: center;
             align-items: center;
             font-weight: bold;
+            margin-bottom: 10px;
         }
         #disclaimer {
             text-align: center; /* Aligning text inside div */
@@ -102,12 +103,30 @@
             background-color:white; /* Just for visibility */
             padding: 20px; /* Add some padding for better appearance */
         }
+
+        /* Beautify dropdown list */
+        #model-select {
+            width: 100%; /* Full width */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            appearance: none; /* Remove default arrow */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%23333"><path d="M14.293 5.293a1 1 0 0 1 1.414 1.414l-5 5a1 1 0 0 1-1.414 0l-5-5A1 1 0 1 1 5.293 4.293L10 8.586l4.707-4.293a1 1 0 0 1 1.414 0z"/></svg>'); /* Add custom arrow */
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 20px;
+            cursor: pointer;
+        }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
     <div id="sidebar">
         <h1>System Heuristics Chatbot</h1>
+        <label for="model-select">Select Model:</label>
+        <select id="model-select">
+        </select>
     </div>
     <div id="chat-container">
         <div id="chat-display">
@@ -130,6 +149,31 @@
             const messageInput = document.getElementById('message-input');
             const chatDisplay = document.getElementById('chat-display');
             const helpTodayMessage = document.getElementById('help-today');
+            const modelSelect = document.getElementById('model-select');
+
+            // Function to populate the select options from API
+            function populateModelSelect() {
+                $.ajax({
+                    url: '/chat/get-models/', // Replace with your API endpoint
+                    type: 'GET',
+                    success: function(response) {
+                        // Clear existing options
+                        modelSelect.innerHTML = '';
+                        for (let i = 0; i < response.models.length; i++) {
+                            const option = document.createElement('option');
+                            option.textContent = response.models[i];
+                            option.value = response.models[i];
+                            modelSelect.appendChild(option);
+                        }
+                    },
+                    error: function(xhr, errmsg, err) {
+                        console.error(xhr.status + ": " + xhr.responseText);
+                    }
+                });
+            }
+
+            // Call the function to populate the select options on page load
+            populateModelSelect();
 
             function addMessage(message, sender) {
                 if (message.trim() !== '') {
@@ -150,6 +194,7 @@
 
             document.getElementById('send-button').addEventListener('click', function() {
                 const message = messageInput.value;
+                const selectedModel = modelSelect.value;
                 addMessage(message, 'User'); // Add user message with appropriate style
                 helpTodayMessage.style.display = 'none';
                 messageInput.value = '';
@@ -158,7 +203,7 @@
                 $.ajax({
                     url: '/chat/send-prompt/',
                     type: 'POST',
-                    data: { prompt: message },
+                    data: { prompt: message, model: selectedModel},
                     success: function(response) {
                         // Process the response from your Django endpoint or OpenAI API
                         addMessage(response.bot_answer, 'Chatbot'); // Add bot response with appropriate style
@@ -173,10 +218,7 @@
             messageInput.addEventListener('input', function() {
                 if (messageInput.value.trim() !== '') {
                     helpTodayMessage.style.display = 'none';
-                } 
-                //else {
-                  //  helpTodayMessage.style.display = 'block';
-               // }
+                }
             });
         });
 
@@ -188,7 +230,6 @@
                 dataType: 'json',
                 success: function(response) {
                     var id = response.id;
-                    console.log(id);
                 },
                 error: function(xhr, status, error) {
                     console.error('Error checking progress:', error);

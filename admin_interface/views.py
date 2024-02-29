@@ -15,7 +15,6 @@ client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
 
 def create_fine_tuning_file(file_path):
-    print("Processing fine tuning file " + file_path)
     file = client.files.create(
         file=open(file_path, "rb"),
         purpose='fine-tune'
@@ -26,23 +25,19 @@ def create_fine_tuning_file(file_path):
     status = file.status
 
     while status != 'processed':
-        print(f"File status: {status}. Waiting for the file to be processed...")
         time.sleep(10)  # Wait for 10 seconds
         file_response = client.File.retrieve(file_id)
         status = file_response['status']
-        print(file_response)
     return file
 
 def fine_tune_model(fine_tuning_file):
-    print("Starting fine tuning job with ID: " + fine_tuning_file.id)
     fine_tuning_response=None
     if fine_tuning_file.status == 'processed':
         fine_tuning_response = client.fine_tuning.jobs.create(
             training_file=fine_tuning_file.id,
             model="gpt-3.5-turbo"
         )
-        print(fine_tuning_response.id)
-    return fine_tuning_response.id
+    return fine_tuning_response
 
 def load_csv_finetuning(csv_file, output_path):
     # Open the CSV file for reading
@@ -128,13 +123,9 @@ def admin_interface(request):
             load_csv_finetuning(path, opath)
             load_csv_finetuning(dpath, dopath)
             merge_jsonl(opath,dopath,mopath)
-            #fine_tuning_file = create_fine_tuning_file(mopath)
-            #id = fine_tune_model(fine_tuning_file)
-            print(client.fine_tuning.jobs.list(limit=10))
-            #model="ft:gpt-3.5-turbo:my-org:custom_suffix:id"
-            success_message = "Training has completed successfully."
-            print(path)
-            print(opath)
+            fine_tuning_file = create_fine_tuning_file(mopath)
+            file_tuning_response = fine_tune_model(fine_tuning_file)
+            success_message = "Training has completed successfully, Fine-tuned Model is : "+file_tuning_response.fine_tuned_model
             form = None  # Reset the form after successful submission
         else:
             success_message = "Training has failed"

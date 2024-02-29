@@ -5,7 +5,7 @@ from django.conf import settings
 import uuid
 from .models import Conversation,Message
 from django.http import JsonResponse
-
+from openai.types import Model
 
 # Create your views here.
 
@@ -25,7 +25,7 @@ def send_prompt_to_openai_chat_api(request):
             message=Message.objects.create(conversation=Conversation.objects.get(id=id),sender='User',
                                            text=request.POST.get('prompt'))
             response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model=request.POST.get('model'),
             messages=[
             {"role": "user", "content": request.POST.get('prompt')}
             ],
@@ -42,7 +42,7 @@ def send_prompt_to_openai_chat_api(request):
             message=Message.objects.create(conversation=Conversation.objects.get(id=conversation.id),sender='User',
                                     text=request.POST.get('prompt'))
             response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model=request.POST.get('model'),
             messages=[
             {"role": "user", "content": request.POST.get('prompt')}
             ],
@@ -59,3 +59,12 @@ def end_session(request):
         id=request.session['session_id']
         del request.session['session_id']
     return JsonResponse({'session_id': id})
+
+def get_models(request):
+    if request.method == 'GET':
+        client = OpenAI(api_key=settings.OPENAI_API_KEY)
+        response = client.models.list()
+        print(response)
+        models_data = [model.id for model in response.data]
+
+        return JsonResponse({'models': models_data})
