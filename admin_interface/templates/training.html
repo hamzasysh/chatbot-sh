@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5; /* Changed background color */
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center; /* Center align content */
+        }
+        h1 {
+            margin-bottom: 30px;
+            color: #333333; /* Changed header text color */
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #007bff; /* Changed heading text color */
+        }
+        p {
+            margin-bottom: 20px; /* Added margin bottom for spacing */
+            color: #555555; /* Changed paragraph text color */
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #555555; /* Changed label text color */
+        }
+        input[type="file"] {
+            margin: 0 auto 20px; /* Adjusted margin to center and add space */
+            display: none; /* Hide the file input */
+        }
+        button.upload-button, button.train-button {
+            margin: 0 auto 10px; /* Added margin at the bottom */
+            padding: 15px 30px; /* Increased padding for bigger button */
+            color: #ffffff; /* Changed button text color */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block; /* Make button a block element */
+            transition: background-color 0.3s; /* Smooth transition */
+        }
+        button.upload-button:hover, button.train-button:hover {
+            background-color: #4CAF50; /* Darker color on hover */
+        }
+        button.upload-button {
+            background-color: #007bff; /* Changed upload button color */
+        }
+        button.train-button {
+            background-color: #f44336; /* Changed train button color */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Page</h1>
+        <h2>System Heuristics</h2>
+        <p>This is an admin-related task related to fine-tuning OpenAI's language model.</p>
+        {% if success_message %}
+        <div class="alert alert-success" role="alert">
+            {{ success_message }}
+        </div>
+        {% endif %}
+    
+        {% if not success_message %}
+        <label for="document">Upload Training Document:</label>
+        <form method="post" enctype="multipart/form-data">
+            {{ form.as_p }}
+            <button class="upload-button" type="submit">Upload File & Train Model</button>
+        </form>
+        {% endif %}
+
+    </div>
+</body>
+</html>

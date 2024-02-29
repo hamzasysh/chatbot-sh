@@ -1,2 +1,39 @@
-ChatBotSH/
-*.py
+# Byte-compiled / optimized Python files
+__pycache__/
+*.pyc
+
+# Django related
+*.log
+*.pot
+*.pyc
+*.pyo
+*.sqlite3
+*.swp
+.env
+
+# Media files
+media/
+
+# Static files
+static/
+
+# Compiled Python bytecode
+*.pyc
+
+# Secret key
+*.secret_key
+
+# Ignore IDE files
+.vscode/
+.idea/
+
+# Ignore local development settings
+local_settings.py
+
+# Ignore database migrations
+*/migrations/
+
+#Ignore Training Folder
+training/
+
+*.pdf
